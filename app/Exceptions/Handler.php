@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -30,8 +31,18 @@ class Handler extends ExceptionHandler
         $this->renderable(function (\Spatie\Permission\Exceptions\UnauthorizedException $e, $request) {
             return response()->json([
                 'responseMessage' => 'You do not have the required authorization.',
-                'responseStatus'  => 403,
+                'responseStatus' => 403,
             ]);
         });
+    }
+
+    protected function unauthenticated($request, AuthenticationException $exception)
+    {
+        if ($request->expectsJson()) {
+            return response()->json(['error' => 'Unauthenticated.'], 401);
+        }
+
+        // return redirect()->guest('login');
+        abort(404);
     }
 }

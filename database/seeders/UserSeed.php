@@ -21,7 +21,7 @@ class UserSeed extends Seeder
         	'password' => bcrypt('123456')
         ], ["email" => "admin@gmail.com"]);
 
-        $role = Role::where(['name' => 'Admin','guard_name' => 'api'])->first();
-        $user->assignRole([$role["id"]]);
+        $role = Role::findByName('Admin', 'api');
+        $user->assignRole("Admin");
     }
 }
