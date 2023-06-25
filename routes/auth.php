@@ -12,6 +12,11 @@ Route::group(['prefix' => 'auth'], function ()
     Route::post('login', [AuthController::class, 'login'])->name('login');
     Route::get('google', [GoogleController::class, 'redirectToGoogle']);
     Route::get('google/callback', [GoogleController::class, 'handleGoogleCallback']);
+
+    Route::group(['middleware' => ['auth:api']], function() {
+        Route::get('/', [AuthController::class, 'isAuth'])->name('auth');
+        Route::get('logout', [AuthController::class, 'revoke'])->name('logout');
+    });
 });
 
 Route::group(['prefix' => 'user', 'middleware' => ['auth:api']], function ()
