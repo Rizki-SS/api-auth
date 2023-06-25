@@ -3,7 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\RoleController;
 use App\Http\Controllers\Auth\UserController;
-use App\Http\Controllers\GoogleController;
+use App\Http\Controllers\Oauth\GoogleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
