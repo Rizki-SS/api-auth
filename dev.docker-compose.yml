@@ -30,3 +30,20 @@ services:
     ports:
       - "9031:80"
       - "9001:9001"
+
+  app-taks:
+    image: authapi:swoole
+    command: php artisan schedule:work --quiet
+    restart: always
+
+  app-db:
+    image: postgres:alpine3.18
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      PGDATA: /data/postgres
+    volumes:
+       - /mnt/docker/api-auth/db/postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
