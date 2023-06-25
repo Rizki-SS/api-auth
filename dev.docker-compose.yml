@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  app: &app
+    # build: 
+    #   context: .
+    #   dockerfile: dockerfile 
+    image: authapi:latest
+    depends_on:
+      - mariadb
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: mariadb
+      DB_USERNAME: "${DB_USERNAME}"
+      DB_DATABASE: "${DB_NAME}"
+      DB_PASSWORD: "${DB_PASSWORD}"
+    # volumes:
+    #   - ./apps:/srv/apps
+    ports:
+      - "8000:8000"
+    networks:
+      - app-networks
+  
+  # app-worker:
+  #   <<: *app
+  #   depends_on:
+  #     - mariadb
+  #   environment:
+  #     DB_CONNECTION: mysql
+  #     DB_HOST: mariadb
+  #     DB_USERNAME: "${DB_USERNAME}"
+  #     DB_DATABASE: "${DB_NAME}"
+  #     DB_PASSWORD: "${DB_PASSWORD}"
+  #   volumes:
+  #     - apps:./srv/apps
+  #     - config/supervisor:/etc/supervisor
+  #   ports:
+  #     - "9031:80"
+  #     - "9001:9001"
+  #   networks:
+  #     - app-networks
+
+  mariadb:
+    image: mariadb:10.3.9
+    environment:
+      MYSQL_DATABASE: "${DB_NAME}"
+      MYSQL_USER: "${DB_USERNAME}"
+      MYSQL_PASSWORD: "${DB_PASSWORD}"
+      MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD}"
+    volumes:
+      - ./dbdata:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    networks:
+      - app-networks
+
+  # pma:
+  #   image: phpmyadmin
+  #   links:
+  #     - mariadb
+  #   environment:
+  #     PMA_HOST: "mariadb"
+  #   ports:
+  #     - "3331:80"
+  #   networks:
+  #     - public
+  #     - app-networks
+
+networks:
+  app-networks:
+    external: false
+  public:
+    external: true
+
+#Volume
+volumes:
+  dbdata:
+    driver: local
