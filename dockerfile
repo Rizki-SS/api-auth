@@ -14,6 +14,8 @@ COPY docker/supervisor/ /etc/supervisor/
 RUN mkdir /var/log/supervisor
 
 WORKDIR /app
+RUN composer self-update 2.6.2
+RUN composer install
 RUN npm install chokidar
 
 CMD ["/bin/sh"]

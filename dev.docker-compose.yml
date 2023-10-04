@@ -2,10 +2,10 @@ version: '3.8'
 
 services:
   app: &app
-    image: authapi:swoole
-    # build:
-    #   context: .
-    #   dockerfile: dockerfile
+    # image: authapi:swoole
+    build:
+      context: .
+      dockerfile: dockerfile
     restart: always
     mem_limit: 512m
     memswap_limit: 1g
@@ -18,23 +18,28 @@ services:
     ports:
       - 8000:8000
     volumes:
-      - "./:/app"
-      - docker/supervisor/ /etc/supervisor/
+      - "./app:/app/app"
+      - "./config:/app/config"
+      - "./resources:/app/resources"
+      - "./routes:/app/routes"
+      - "./storage:/app/storage"
+      - "./.env:/app/.env"
+      - "./docker/supervisor/:/etc/supervisor/"
 
-  app-worker:
-    image: authapi:swoole
-    command:  ash -c "supervisord -c /etc/supervisor/supervisord.conf && tail -f /dev/null"
-    restart: always
-    volumes: 
-      - docker/supervisor/ /etc/supervisor/
-    ports:
-      - "9031:80"
-      - "9001:9001"
+  # app-worker:
+  #   image: authapi:swoole
+  #   command:  ash -c "supervisord -c /etc/supervisor/supervisord.conf && tail -f /dev/null"
+  #   restart: always
+  #   volumes: 
+  #     - docker/supervisor/ /etc/supervisor/
+  #   ports:
+  #     - "9031:80"
+  #     - "9001:9001"
 
-  app-taks:
-    image: authapi:swoole
-    command: php artisan schedule:work --quiet
-    restart: always
+  # app-taks:
+  #   image: authapi:swoole
+  #   command: php artisan schedule:work --quiet
+  #   restart: always
 
   app-db:
     image: postgres:alpine3.18
